@@ -4,6 +4,8 @@
 // ============================================================
 
 import { createContext, useContext, useReducer, useEffect } from "react";
+import { useAuth } from "./AuthContext";
+import { useNavigate } from "react-router-dom";
 import { cartService } from "../services/api";
 const CartContext = createContext();
 
@@ -61,36 +63,43 @@ const [state, dispatch] = useReducer(cartReducer, {
   items: [],
 });
 
-// Temporary user (replace with logged-in user later)
-const userId = "6a4e86f334fd497f4c57da39";
+// logged-in user 
+const { user } = useAuth();
+const navigate = useNavigate();
 
+const userId = user?._id;
  
 
   useEffect(() => {
   const loadCart = async () => {
+    if (!userId) {
+      dispatch({ type: CART_ACTIONS.CLEAR_CART });
+      return;
+    }
+
     try {
       const data = await cartService.getCart(userId);
 
-dispatch({
-  type: CART_ACTIONS.CLEAR_CART,
-});
+      dispatch({
+        type: CART_ACTIONS.CLEAR_CART,
+      });
 
-data.items.forEach((item) => {
-  dispatch({
-    type: CART_ACTIONS.ADD_ITEM,
-    payload: {
-      ...item.product,
-      quantity: item.quantity,
-    },
-  });
-});
+      data.items.forEach((item) => {
+        dispatch({
+          type: CART_ACTIONS.ADD_ITEM,
+          payload: {
+            ...item.product,
+            quantity: item.quantity,
+          },
+        });
+      });
     } catch (err) {
-      console.error(err);
+      console.error("Failed to load cart:", err);
     }
   };
 
   loadCart();
-}, []);
+}, [userId]);
 
   // Helper: total item count (badge)
   const itemCount = state.items.reduce((sum, i) => sum + i.quantity, 0);
@@ -99,6 +108,12 @@ data.items.forEach((item) => {
   const totalPrice = state.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
 const addToCart = async (product, quantity) => {
+  
+  if (!userId) {
+    navigate("/login");
+    return;
+  }
+
   try {
     await cartService.addToCart({
       userId,
@@ -134,6 +149,11 @@ const addToCart = async (product, quantity) => {
 
 
 const removeFromCart = async (productId) => {
+  if (!userId) {
+    navigate("/login");
+    return;
+  }
+
   try {
     await cartService.removeFromCart({
       userId,
@@ -160,6 +180,11 @@ const removeFromCart = async (productId) => {
 };
 
 const updateQuantity = async (productId, quantity) => {
+  if (!userId) {
+    navigate("/login");
+    return;
+  }
+
   try {
     await cartService.updateCart({
       userId,
@@ -189,6 +214,10 @@ const updateQuantity = async (productId, quantity) => {
 };
 
 const clearCart = async () => {
+  if (!userId) {
+    return;
+  }
+
   try {
     await cartService.clearCart(userId);
 

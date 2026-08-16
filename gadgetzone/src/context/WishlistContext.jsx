@@ -5,6 +5,8 @@
 
 import { createContext, useContext, useReducer, useEffect } from "react";
 import { wishlistService } from "../services/api";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 const WishlistContext = createContext();
 
 function wishlistReducer(state, action) {
@@ -28,9 +30,17 @@ const [state, dispatch] = useReducer(wishlistReducer, {
   items: [],
 });
 
-const userId = "6a4e86f334fd497f4c57da39";
+const { user } = useAuth();
+const navigate = useNavigate();
+
+const userId = user?._id;
+
 useEffect(() => {
   const loadWishlist = async () => {
+    if (!userId) {
+      dispatch({ type: "CLEAR" });
+      return;
+    }
     try {
       const data = await wishlistService.getWishlist(userId);
 
@@ -51,10 +61,15 @@ useEffect(() => {
   };
 
   loadWishlist();
-}, []);
+}, [userId]);
 
   
 const addToWishlist = async (product) => {
+  if (!userId) {
+    navigate("/login");
+    return;
+  }
+
   try {
     await wishlistService.addToWishlist({
       userId,
@@ -80,6 +95,11 @@ const addToWishlist = async (product) => {
 };
 
 const removeFromWishlist = async (productId) => {
+  if (!userId) {
+    navigate("/login");
+    return;
+  }
+
   try {
     await wishlistService.removeFromWishlist({
       userId,
