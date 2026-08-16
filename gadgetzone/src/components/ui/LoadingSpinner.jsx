@@ -1,4 +1,5 @@
 // src/components/ui/LoadingSpinner.jsx
+
 import "./LoadingSpinner.css";
 
 export function LoadingSpinner({ size = "md", text = "" }) {

@@ -98,13 +98,18 @@ data.items.forEach((item) => {
   // Helper: total price
   const totalPrice = state.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
-const addToCart = async (product) => {
+const addToCart = async (product, quantity) => {
   try {
     await cartService.addToCart({
       userId,
       productId: product._id,
-      quantity: 1,
+      quantity: quantity,
     });
+
+    console.log("ADDING TO CART:", {
+  productId: product._id,
+  quantity: quantity,
+});
 
     const data = await cartService.getCart(userId);
 
@@ -121,11 +126,11 @@ const addToCart = async (product) => {
         },
       });
     });
-
   } catch (err) {
     console.error(err);
   }
 };
+
 
 
 const removeFromCart = async (productId) => {
@@ -199,11 +204,24 @@ const clearCart = async () => {
 
 
 const isInCart = (id) => state.items.some((i) => i._id === id);
-
+const getCartQuantity = (id) => {
+  const item = state.items.find((i) => i._id === id);
+  return item ? item.quantity : 0;
+};
   return (
-    <CartContext.Provider value={{ cart: state, addToCart, removeFromCart, updateQuantity, clearCart, isInCart, itemCount, totalPrice }}>
-      {children}
-    </CartContext.Provider>
+  <CartContext.Provider value={{
+    cart: state,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    isInCart,
+    getCartQuantity,
+    itemCount,
+    totalPrice
+  }}>
+        {children}
+   </CartContext.Provider>
   );
 }
 

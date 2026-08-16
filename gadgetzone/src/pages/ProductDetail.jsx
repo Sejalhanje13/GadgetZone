@@ -1,4 +1,5 @@
 // src/pages/ProductDetail.jsx
+import { PageLoader } from "../components/ui/LoadingSpinner";
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { productService } from "../services/api";
@@ -15,18 +16,19 @@ export default function ProductDetail() {
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [related, setRelated] = useState([]);
-  const { addToCart, isInCart } = useCart();
+  const [loading, setLoading] = useState(true);
+  const { addToCart } = useCart();  
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { success, info } = useToast();
 
   const [activeImage, setActiveImage] = useState(0);
-  const [qty, setQty] = useState(1);
-  const [added, setAdded] = useState(false);
   
   
   useEffect(() => {
   const loadProduct = async () => {
     try {
+      setLoading(true);
+
       const response = await productService.getById(id);
 
       setProduct(response.data);
@@ -43,29 +45,53 @@ export default function ProductDetail() {
 
       setRelated(relatedProducts);
     } catch (error) {
-      console.error(error);
+      console.error("Failed to load product:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   loadProduct();
 }, [id]);
 
+   
 
-  if (!product) return (
-    <div className="container" style={{ paddingTop: "120px", textAlign: "center" }}>
-      <div className="empty-state"><div className="empty-icon">😕</div><h3>Product Not Found</h3><p>This product doesn't exist.</p><Link to="/products" className="btn btn-primary">Back to Products</Link></div>
+  if (loading) {
+  return <PageLoader text="Loading product..." />;
+}
+
+if (!product) {
+  return (
+    <div
+      className="container"
+      style={{
+        paddingTop: "120px",
+        textAlign: "center",
+      }}
+    >
+      <div className="empty-state">
+        <div className="empty-icon">😕</div>
+        <h3>Product Not Found</h3>
+        <p>This product doesn't exist.</p>
+
+        <Link to="/products" className="btn btn-primary">
+          Back to Products
+        </Link>
+      </div>
     </div>
   );
+}
 
   const inWishlist = isInWishlist(product._id);
   const discount = product.originalPrice ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0;
 
-  const handleAddToCart = () => {
-    for (let i = 0; i < qty; i++) addToCart(product);
-    setAdded(true);
-    success(`${qty} × ${product.name} added to cart`, "Cart Updated");
-    setTimeout(() => setAdded(false), 2000);
-  };
+  const handleAddToCart = async () => {
+  await addToCart(product, 1);
+
+  success(`${product.name} added to cart`, "Cart Updated");
+
+  navigate("/cart");
+};
 
   const handleWishlistToggle = () => {
     if (inWishlist) {
@@ -108,7 +134,14 @@ export default function ProductDetail() {
           <div className="pd-info">
             <div className="pd-brand-row">
               <span className="pd-brand">{product.brand}</span>
-              <span className={`stock-badge ${product.inStock ? "in-stock" : "out-stock"}`}>{product.inStock ? "In Stock" : "Out of Stock"}</span>
+
+              <span
+                className={`stock-badge ${
+                  product.stock > 0 ? "in-stock" : "out-stock"
+                }`}
+              >
+                {product.stock > 0 ? "In Stock" : "Out of Stock"}
+              </span>
             </div>
             <h1 className="pd-name">{product.name}</h1>
 
@@ -143,20 +176,22 @@ export default function ProductDetail() {
 
             {/* Actions */}
             <div className="pd-actions">
-              <div className="qty-control">
-                <button className="qty-btn" onClick={() => setQty(Math.max(1, qty - 1))}>−</button>
-                <span className="qty-value">{qty}</span>
-                <button className="qty-btn" onClick={() => setQty(qty + 1)}>+</button>
-              </div>
-              <button className={`btn btn-primary btn-lg flex-1 ${added ? "in-cart" : ""}`} onClick={handleAddToCart} disabled={!product.inStock} style={{ flex: 1 }}>
-                {added ? "✓ Added to Cart!" : isInCart(product._id) ? "🛒 Add More" : "🛒 Add to Cart"}
+              
+              <button
+                className="btn btn-primary btn-lg flex-1"
+                onClick={handleAddToCart}
+                disabled={product.stock <= 0}
+                style={{ flex: 1 }}
+              >
+                🛒 Add to Cart
               </button>
               <button className={`btn-icon btn-lg ${inWishlist ? "active" : ""}`} style={{ width: 48, height: 48 }} onClick={handleWishlistToggle}>
                 {inWishlist ? "❤️" : "🤍"}
               </button>
             </div>
 
-            <button className="btn btn-accent btn-full" onClick={() => { handleAddToCart(); navigate("/cart"); }}>
+            <button className="btn btn-accent btn-full"
+              onClick={handleAddToCart}>
               ⚡ Buy Now
             </button>
 
@@ -175,7 +210,7 @@ export default function ProductDetail() {
           <section className="pd-related">
             <h2 className="section-title" style={{ marginBottom: "var(--space-xl)" }}>Related Products</h2>
             <div className="grid-4">
-              {related.map((p) => <ProductCard key={p.id} product={p} />)}
+              {related.map((p) => <ProductCard key={p._idid} product={p} />)}
             </div>
           </section>
         )}

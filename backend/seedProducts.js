@@ -3,7 +3,9 @@ const dotenv = require("dotenv");
 
 const connectDB = require("./config/db");
 const Product = require("./models/Product");
-const products = require("./data/products");
+const products = require("./data/products"
+  
+);
 
 dotenv.config();
 
@@ -24,7 +26,7 @@ const importData = async () => {
       originalPrice: product.originalPrice,
       image: product.image,
       images: product.images,
-      stock: product.inStock ? 50 : 0,
+      stock: product.stock ?? (product.inStock ? 50 : 0),      
       rating: product.rating,
       reviews: product.reviews,
       featured: product.featured,
