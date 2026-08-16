@@ -7,72 +7,73 @@ import { useState, useEffect } from "react";
 import { categories, reviews } from "../data/products";
 import { productService } from "../services/api";
 import ProductCard from "../components/common/ProductCard";
+
 import "./Home.css";
 
 // ── Hero Section ────────────────────────────────────────────
 function HeroSection() {
   return (
     <section className="hero">
-      <div className="hero-bg">
-        <div className="hero-orb orb-1" />
-        <div className="hero-orb orb-2" />
-        <div className="hero-orb orb-3" />
-      </div>
+     
 
       <div className="container hero-container">
         <div className="hero-content">
-          <div className="hero-label">
-            <span className="label-dot" />
-            New Arrivals 2024
-          </div>
+
           <h1 className="hero-title">
-            Next-Gen Tech,<br />
-            <span className="hero-title-accent">Delivered Fast</span>
+            Upgrade Your Tech.<br />
+            <span className="hero-title-accent">
+              Elevate Your Life.
+            </span>
           </h1>
+
           <p className="hero-subtitle">
-            Explore the world's finest electronics — from powerhouse laptops to precision keyboards. Curated for professionals and enthusiasts.
+            Discover premium electronics from top brands —
+            built for performance, designed for everyday life.
           </p>
+
           <div className="hero-actions">
             <Link to="/products" className="btn btn-primary btn-lg">
               Shop Now →
             </Link>
-            <Link to="/products?category=Laptops" className="btn btn-outline btn-lg">
-              View Laptops
+
+            <Link
+              to="/products"
+              className="btn btn-outline btn-lg"
+            >
+              Explore Categories
             </Link>
           </div>
+
           <div className="hero-stats">
-            <div className="stat"><span className="stat-num">500+</span><span className="stat-label">Products</span></div>
+            <div className="stat">
+              <span className="stat-num">500+</span>
+              <span className="stat-label">Products</span>
+            </div>
+
             <div className="stat-divider" />
-            <div className="stat"><span className="stat-num">50K+</span><span className="stat-label">Happy Customers</span></div>
+
+            <div className="stat">
+              <span className="stat-num">50K+</span>
+              <span className="stat-label">Happy Customers</span>
+            </div>
+
             <div className="stat-divider" />
-            <div className="stat"><span className="stat-num">4.9★</span><span className="stat-label">Avg Rating</span></div>
+
+            <div className="stat">
+              <span className="stat-num">4.9★</span>
+              <span className="stat-label">Avg Rating</span>
+            </div>
           </div>
+
         </div>
 
-        <div className="hero-visual">
-          <div className="hero-card-float main-card">
-            <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&q=80" alt="MacBook Pro" className="hero-product-img" />
-            <div className="hero-card-info">
-              <p className="hc-brand">Apple</p>
-              <p className="hc-name">MacBook Pro M3 Max</p>
-              <p className="hc-price">$3,499</p>
-            </div>
-          </div>
-          <div className="hero-card-float side-card">
-            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80" alt="Sony Headphones" className="hero-product-img-sm" />
-            <div>
-              <p className="hc-brand-sm">Sony</p>
-              <p className="hc-name-sm">WH-1000XM5</p>
-              <p className="hc-price-sm">$349</p>
-            </div>
-          </div>
-          <div className="hero-badge-float badge-1">🔥 Trending</div>
-          <div className="hero-badge-float badge-2">✓ Authentic</div>
-        </div>
+        
       </div>
     </section>
   );
-}
+} 
+         
+        
 
 // ── Categories Section ──────────────────────────────────────
 function CategoriesSection() {

@@ -279,13 +279,191 @@
 }
 .mobile-auth { display: flex; flex-direction: column; gap: var(--space-sm); }
 
-/* Responsive */
-@media (max-width: 900px) {
-  .navbar-nav, .auth-buttons { display: none; }
-  .hamburger { display: flex; }
-  .mobile-menu { display: block; }
+/* ============================================================
+   RESPONSIVE NAVBAR
+   ============================================================ */
+
+/* ---------- Large screens ---------- */
+
+@media (max-width: 1200px) {
+
+  .navbar-container {
+    padding-left: var(--space-lg);
+    padding-right: var(--space-lg);
+    gap: var(--space-md);
+  }
+
+  .navbar-nav {
+    gap: 2px;
+  }
+
+  .nav-link {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .navbar-actions {
+    gap: 2px;
+  }
 }
-@media (max-width: 480px) {
-  .navbar-container { padding: 0 var(--space-md); }
-  .profile-name, .profile-arrow { display: none; }
+
+
+/* ---------- Laptop / smaller desktop ---------- */
+
+@media (max-width: 1024px) {
+
+  .navbar-container {
+    padding-left: var(--space-md);
+    padding-right: var(--space-md);
+    gap: var(--space-sm);
+  }
+
+  .logo-text {
+    font-size: 1.15rem;
+  }
+
+  .nav-link {
+    font-size: 0.85rem;
+    padding: 6px 9px;
+  }
+
+  .action-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .profile-btn {
+    padding: 5px 9px;
+  }
+}
+
+
+/* ---------- Tablet ---------- */
+
+@media (max-width: 900px) {
+
+  /* Hide desktop navigation */
+  .navbar-nav {
+    display: none;
+  }
+
+  /* Hide desktop login/signup */
+  .auth-buttons {
+    display: none;
+  }
+
+  /* Show hamburger */
+  .hamburger {
+    display: flex;
+  }
+
+  /* Mobile menu becomes available */
+  .mobile-menu {
+    display: block;
+  }
+
+  .navbar-container {
+    padding-left: var(--space-md);
+    padding-right: var(--space-md);
+  }
+
+  .navbar-actions {
+    margin-left: auto;
+  }
+}
+
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 600px) {
+
+  .navbar-container {
+    padding-left: 14px;
+    padding-right: 14px;
+    gap: 6px;
+  }
+
+  .navbar-logo {
+    min-width: 0;
+  }
+
+  .logo-text {
+    font-size: 1.1rem;
+  }
+
+  .logo-icon {
+    font-size: 1.2rem;
+  }
+
+  .navbar-actions {
+    gap: 2px;
+    flex-shrink: 0;
+  }
+
+  .action-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  /* Profile is available inside mobile menu */
+  .profile-dropdown-wrapper {
+    display: none;
+  }
+
+  .hamburger {
+    margin-left: 2px;
+  }
+
+  .mobile-menu {
+    padding: var(--space-md);
+  }
+}
+
+
+/* ---------- Small phones ---------- */
+
+@media (max-width: 400px) {
+
+  .navbar-container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .logo-text {
+    font-size: 1rem;
+  }
+
+  .logo-icon {
+    font-size: 1.1rem;
+  }
+
+  .action-btn {
+    width: 34px;
+    height: 34px;
+    font-size: 0.95rem;
+  }
+
+  .hamburger {
+    padding: 6px;
+  }
+}
+
+
+/* ---------- Very small phones ---------- */
+
+@media (max-width: 350px) {
+
+  .logo-text {
+    font-size: 0.9rem;
+  }
+
+  .logo-icon {
+    font-size: 1rem;
+  }
+
+  .action-btn {
+    width: 32px;
+    height: 32px;
+  }
 }
